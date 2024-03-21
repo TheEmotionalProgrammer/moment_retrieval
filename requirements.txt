@@ -1,0 +1,7 @@
+python-terrier 
+nltk 
+scikit-learn 
+lightgbm 
+IProgress 
+jupyter 
+ipywidgets
