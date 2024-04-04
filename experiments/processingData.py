@@ -4,7 +4,7 @@ import numpy as np
 import seaborn as sns
 
 
-dataset_choice = "TVR"  # "TVR" or "QVH"
+dataset_choice = "QVH"  # "TVR" or "QVH"
 first_stage_retrieval_list = ["BM25", "PL2", "In_expB2"] if dataset_choice == "TVR" else ["BM25", "LemurTF_IDF", "In_expB2"]
 
 feature_combinations_names = ["PL2 + DLH", "BM25 + Hiemstra_LM + PL2 + CoordinateMatch",
@@ -42,22 +42,25 @@ test_data = load_data(dataset_choice, "test")
 
 # Create a heatmap with: x-axis = feature combinations, y-axis = learned models, color = RR
 metric_choice = "RR"
-first_stage_retrieval_choice = "In_expB2"
+# first_stage_retrieval_choice = "In_expB2"
 
-# create a 2d array with the values of the chosen metric
-values = np.zeros((len(feature_combinations_names), len(learned_models_names)))
-for feat_comb in feature_combinations_names:
-    for model in learned_models_names:
-        values[feature_combinations_names.index(feat_comb)][learned_models_names.index(model)] = test_data[first_stage_retrieval_choice][feat_comb][model].head()[metric_choice][0]
 
-# create the heatmap
-short_learned_models_names = ["SVR", "XGB", "FRC", "FRR"]
-short_feature_combinations_names = ["Comb1", "Comb2", "Comb3", "Comb4"]
-sns.heatmap(values, annot=True, xticklabels=short_learned_models_names, yticklabels=short_feature_combinations_names, cmap="Blues")
-plt.xlabel("Learned Models")
-plt.ylabel("Feature Combinations")
-plt.title(f"RR values for {dataset_choice} using {first_stage_retrieval_choice}")
-# save it to a file -> inside the plots folder
-plt.savefig(f"./plots/{dataset_choice}_{first_stage_retrieval_choice}_{metric_choice}.png")
-plt.show()
+for first_stage_retrieval_choice in first_stage_retrieval_list:
+
+    # create a 2d array with the values of the chosen metric
+    values = np.zeros((len(feature_combinations_names), len(learned_models_names)))
+    for feat_comb in feature_combinations_names:
+        for model in learned_models_names:
+            values[feature_combinations_names.index(feat_comb)][learned_models_names.index(model)] = test_data[first_stage_retrieval_choice][feat_comb][model].head()[metric_choice][0]
+
+    # create the heatmap
+    short_learned_models_names = ["SVR", "XGB", "FRC", "FRR"]
+    short_feature_combinations_names = ["Comb1", "Comb2", "Comb3", "Comb4"]
+    sns.heatmap(values, annot=True, xticklabels=short_learned_models_names, yticklabels=short_feature_combinations_names, cmap="Blues")
+    plt.xlabel("Learned Models")
+    plt.ylabel("Feature Combinations")
+    plt.title(f"RR values for {dataset_choice} using {first_stage_retrieval_choice}")
+    # save it to a file -> inside the plots folder
+    plt.savefig(f"./plots/{dataset_choice}_{first_stage_retrieval_choice}_{metric_choice}.png")
+    plt.show()
 
